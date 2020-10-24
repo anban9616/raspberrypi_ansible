@@ -1,0 +1,30 @@
+---
+# tasks file for nfs
+- name: nfs
+  yum:
+    name:
+      - nfs-utils
+      - rpcbind
+    state: latest
+
+- name: add nfs to service
+  service: 
+    name: nfs
+    enabled: yes
+      
+- name: add rpcbind to service
+  service: 
+    name: rpcbind
+    enabled: yes
+      
+- name: config nfs export
+  template:
+    src: exports
+    dest: /etc/exports
+    owner: root
+    group: root 
+    mode: '0644'
+  changed_when: 2 > 1 
+  notify:
+    - restart rpcbind
+    - restart nfs
