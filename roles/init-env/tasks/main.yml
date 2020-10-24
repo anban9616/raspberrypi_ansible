@@ -1,0 +1,77 @@
+---
+# tasks file for init-env
+- name: find repo file
+  find:
+    paths: /etc/yum.repos.d
+    patterns: "*.repo"
+  register: files_to_delete
+
+- name: remove repo file
+  file:
+    path: "{{ item.path }}"
+    state: absent
+  with_items: "{{ files_to_delete.files }}"
+
+- name: Add multiple repositories into all.repo (1)
+  yum_repository:
+    name: c7-base
+    description: base YUM repo
+    file: all
+    baseurl: http://10.0.0.10/centos/$releasever/base/ 
+    gpgcheck: no
+    enabled: yes
+   
+- name: Add multiple repositories into all.repo (2)
+  yum_repository:
+    name: c7-epel
+    description: epel YUM repo
+    file: all
+    baseurl: http://10.0.0.10/centos/$releasever/epel/ 
+    gpgcheck: no
+    enabled: yes
+
+- name: Template a file to /etc/sysconfig/network-scripts/
+  template:
+    src: network/ifcfg-{{ item }}.j2 
+    dest: /etc/sysconfig/network-scripts/ifcfg-{{ item }}
+    owner: root
+    group: root
+    mode: '0644'
+  with_items: "{{ ansible_interfaces }}"
+  tags: network
+  notify: restart_network 
+
+- name: Install Common Packages
+  yum:
+    name: 
+      - "{{ item }}"
+    state: present
+    update_cache: yes
+  with_items: 
+    - "{{ install_pkgs }}"
+  tags: install_pkgs 
+
+- name: Disable SELinux
+  selinux:
+    state: disabled
+  tags: disable_selinux 
+
+- name: Disable firewalld
+  service:
+    name: firewalld
+    state: stopped
+    enabled: no
+  tags: stop_service
+
+- name: Disable NetworkManager 
+  service:
+    name: NetworkManager 
+    state: stopped
+    enabled: no
+  tags: stop_service
+  notify: restart_network
+
+
+
+
+

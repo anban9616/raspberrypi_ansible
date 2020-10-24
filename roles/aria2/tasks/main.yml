@@ -1,0 +1,25 @@
+---
+# tasks file for aria2
+- name: mkdir path
+  file:
+    path: /etc/aria2
+    state: directory
+    mode: '0755'
+
+- name: aria2.conf 
+  tempelate:
+    src: aria2.conf.j2 
+    dest: /etc/aria2/aria2.conf
+      
+- name: aria2.session 
+  tempelate:
+    src: aria2.session 
+    dest: /etc/aria2/aria2.session
+
+- name: install aria2
+  yum: 
+    name: 
+      - aria2
+    state: latest
+
+- name: aria2 webui

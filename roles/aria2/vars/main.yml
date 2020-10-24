@@ -1,0 +1,5 @@
+---
+# vars file for aria2
+rpc-secret: anbanzhou
+download_dir: /mnt/jixie/aria2
+

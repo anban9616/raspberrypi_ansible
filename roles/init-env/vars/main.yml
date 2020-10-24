@@ -1,0 +1,14 @@
+---
+# vars file for init-env
+network_ip: "{{ ansible_ens33['ipv4']['address'].split('.')|last }}" 
+
+install_pkgs:
+  - gcc
+  - gcc-c++
+  - vim
+  - yum-utils
+  - wget
+  - lrzsz
+  - unzip
+  - net-tools
+  - htop
