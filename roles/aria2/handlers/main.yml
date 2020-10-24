@@ -1,2 +1,14 @@
 ---
 # handlers file for aria2
+- name: restart nginx
+  service:
+    name: nginx
+    state: restarted
+    enabled: yes
+
+
+- name: restart aria2 
+  service:
+    name: aria2 
+    state: restarted
+    enabled: yes

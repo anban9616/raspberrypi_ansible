@@ -1,0 +1,12 @@
+[Unit]
+Description=The aria2 download service 
+After=network.target
+
+[Service]
+PIDFile=/run/aria2.pid
+ExecStartPre=/usr/bin/rm -f /run/aria2.pid
+ExecStart=/usr/bin/aria2c --conf-path=/etc/aria2/aria2.conf
+ExecReload=/bin/kill -s HUP $MAINPID
+
+[Install]
+WantedBy=multi-user.target

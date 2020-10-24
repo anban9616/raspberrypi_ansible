@@ -7,12 +7,12 @@
     mode: '0755'
 
 - name: aria2.conf 
-  tempelate:
+  template:
     src: aria2.conf.j2 
     dest: /etc/aria2/aria2.conf
-      
+
 - name: aria2.session 
-  tempelate:
+  template:
     src: aria2.session 
     dest: /etc/aria2/aria2.session
 
@@ -20,6 +20,28 @@
   yum: 
     name: 
       - aria2
+      - nginx
     state: latest
 
-- name: aria2 webui
+- name: add aria2 to systemd service
+  template:
+    src: aria2.service
+    dest: /usr/lib/systemd/system/aria2.service
+
+- name: nginx configure file
+  template:
+    src: ariaNg.conf
+    dest: /etc/nginx/conf.d/
+
+- name: ariaNg web
+  copy: 
+    src: ariaNg
+    dest: /srv
+    owner: nginx
+    group: nginx
+  changed_when: 2 > 1
+  notify:
+    - restart nginx
+    - restart aria2
+  tags: ariaNg 
+
